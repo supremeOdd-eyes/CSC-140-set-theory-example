@@ -1,0 +1,113 @@
+
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+
+public class GroceryStoreInventory {
+
+    public static void main(String[] args) {
+        // Initial inventories of both stores
+        Set<String> storeAInventory = new HashSet<>();
+        storeAInventory.add("apple");
+        storeAInventory.add("banana");
+        storeAInventory.add("carrot");
+        storeAInventory.add("tomato");
+        storeAInventory.add("eggplant");
+
+        Set<String> storeBInventory = new HashSet<>();
+        storeBInventory.add("banana");
+        storeBInventory.add("cherry");
+        storeBInventory.add("tomato");
+        storeBInventory.add("fig");
+        storeBInventory.add("grape");
+
+        // Create a scanner object to get user input
+        Scanner scanner = new Scanner(System.in);
+        while (true){
+      	  
+      	
+        // Allow the user to choose which store to update and whether to add or remove an item
+        System.out.println("Store A" + storeAInventory );
+        System.out.println("Store B" + storeBInventory );
+        System.out.print("Which store do you want to update (A or B)? You can enter none stop editing. ");
+        String storeChoice = scanner.nextLine().trim().toUpperCase();
+        System.out.print("Do you want to add or remove an item (add/remove)? ");
+        String action = scanner.nextLine().trim().toLowerCase();
+        
+        if ("NONE".equals(storeChoice)) {
+        	break;
+        }
+        else if ("A".equals(storeChoice)) {
+            if ("add".equals(action)) {
+                addItem(storeAInventory, scanner);
+            } else if ("remove".equals(action)) {
+                removeItem(storeAInventory, scanner);
+            } else {
+                System.out.println("Invalid action.");
+            }
+        } else if ("B".equals(storeChoice)) {
+            if ("add".equals(action)) {
+                addItem(storeBInventory, scanner);
+            } else if ("remove".equals(action)) {
+                removeItem(storeBInventory, scanner);
+            } else {
+                System.out.println("Invalid action.");
+            }
+        }  
+        else {
+            System.out.println("Invalid store choice.");
+        }
+        }
+        // Union: All unique items across both stores
+        Set<String> allItems = new HashSet<>(storeAInventory);
+        allItems.addAll(storeBInventory);
+        System.out.println("All the inventory in store A and/or B: " + allItems);
+
+        // Intersection: Items that are available in both stores
+        Set<String> overlappingItems = new HashSet<>(storeAInventory);
+        overlappingItems.retainAll(storeBInventory);
+        System.out.println("Inventory that is in both stores: " + overlappingItems);
+
+        // Difference: Items that are in Store A but not in Store B
+        Set<String> storeAOnly = new HashSet<>(storeAInventory);
+        storeAOnly.removeAll(storeBInventory);
+        System.out.println("Items only in Store A: " + storeAOnly);
+
+        // Symmetric difference: Items that are in only one store
+        Set<String> uniqueItems = new HashSet<>(storeAInventory);
+        uniqueItems.addAll(storeBInventory);
+        Set<String> temp = new HashSet<>(storeAInventory);
+        temp.retainAll(storeBInventory);
+        uniqueItems.removeAll(temp);
+        System.out.println("Inventory that is only in one store: " + uniqueItems);
+
+        // Subset: Check if Store A’s inventory is a subset of Store B’s inventory
+        System.out.println("Is Store A's inventory a subset of Store B's?: " + storeBInventory.containsAll(storeAInventory));
+
+        // Subset: Check if Store B’s inventory is a subset of Store A’s inventory
+        System.out.println("Is Store B's inventory a subset of Store A's?: " + storeAInventory.containsAll(storeBInventory));
+
+        // Disjoint: Check if Store A and Store B have no items in common
+        System.out.println("Do Store A and Store B have no items in common?: " + storeAInventory.stream().noneMatch(storeBInventory::contains));
+    }
+
+    // Function to add an item to the inventory
+    public static void addItem(Set<String> storeInventory, Scanner scanner) {
+        System.out.print("Enter the item to add to the inventory: ");
+        String item = scanner.nextLine();
+        storeInventory.add(item);
+        System.out.println("Updated inventory: " + storeInventory);
+    }
+
+    // Function to remove an item from the inventory
+    public static void removeItem(Set<String> storeInventory, Scanner scanner) {
+        System.out.print("Enter the item to remove from the inventory: ");
+        String item = scanner.nextLine();
+        if (storeInventory.contains(item)) {
+            storeInventory.remove(item);
+            System.out.println("Updated inventory: " + storeInventory);
+        } else {
+            System.out.println("The item " + item + " is not in the inventory.");
+        }
+    }
+}
